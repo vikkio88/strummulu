@@ -6,12 +6,17 @@ import io from './libs/game/io';
 class App extends Component {
   state = {
     roomId: null,
-    messages: []
+    messages: [],
+    gameState: {}
   }
 
   addMessage(msg) {
     const { messages } = this.state;
     this.setState({ messages: [...messages, msg] });
+  }
+
+  stateUpdate(gameState) {
+    this.setState({ gameState });
   }
 
   create = () => {
@@ -24,7 +29,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    io.init({ [io.MESSAGES.MESSAGE]: msg => this.addMessage(msg) })
+    io.init({
+      [io.EVENTS.MESSAGE]: msg => this.addMessage(msg),
+      [io.EVENTS.STATE_UPDATE]: data => this.stateUpdate(data)
+    })
   }
 
   render() {

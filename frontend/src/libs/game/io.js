@@ -6,7 +6,8 @@ const CLIENT_EVENTS = {
 };
 
 const SERVER_EVENTS = {
-    MESSAGE: 'message'
+    MESSAGE: 'message',
+    STATE_UPDATE: 'stateUpdate'
 };
 
 const defaultConfig = {
@@ -14,7 +15,7 @@ const defaultConfig = {
 };
 
 const io = {
-    MESSAGES: SERVER_EVENTS,
+    EVENTS: SERVER_EVENTS,
 
     init(config = {}) {
         this.socket = openSocket('http://localhost:5000');

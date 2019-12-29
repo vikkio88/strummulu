@@ -11,7 +11,6 @@ class Room {
         this.connections.push(creatorId);
     }
 
-
     join(joinerId) {
 
         if (this.connections.indexOf(joinerId) > -1 || this.connections.length >= this.maxSits) {
@@ -19,6 +18,7 @@ class Room {
         }
 
         this.connections.push(joinerId);
+
 
         return true;
     }

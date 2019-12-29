@@ -1,6 +1,6 @@
 const port = process.env.PORT || 5000;
 const io = require('socket.io')();
-const { MESSAGES, EVENTS, CLIENT_ACTIONS } = require('./const');
+const { EVENTS, CLIENT_ACTIONS } = require('./const');
 const Server = require('./game/Server');
 
 const server = new Server();
