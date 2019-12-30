@@ -18,32 +18,26 @@ class Server {
     }
 
 
-    createRoom(connection) {
-        const room = new Room()
+    createRoom(client) {
+        const room = new Room(client)
         this.rooms.set(room.id, room);
         const roomId = room.id;
-        connection.emit(MESSAGES.MESSAGE, { roomId });
-        console.log(`[SERVER]: ${connection.id} created room ${roomId}`);
+        client.emit(MESSAGES.MESSAGE, { roomId });
+        console.log(`[SERVER]: ${client.id} created room ${roomId}`);
     }
 
-    joinRoom(roomId, clientId) {
+    joinRoom(roomId, client) {
+        const { id: clientId } = client;
         console.log(`[SERVER]: ${clientId} entering room ${roomId}`);
         const room = this.rooms.get(roomId);
 
         if (!room) {
-            console.log(`[SERVER]: ${clientId} could not enter room ${roomId}`);
+            console.log(`[SERVER]: ${clientId} try entering non existing room ${roomId}`);
+            client.emit(MESSAGES.ERROR, `Room ${roomId} does not exist`);
             return false;
         }
 
-        const joined = room.join(clientId);
-
-        if (joined) {
-            console.log(`[SERVER]: ${clientId} entered room ${roomId}`);
-            for (const clientId of room.connections) {
-                const connection = this.connections.get(clientId);
-                connection && connection.emit(MESSAGES.MESSAGE, { roomId, type: 'Joined', clientId })
-            }
-        }
+        room.tryJoin(client);
     }
 }
 

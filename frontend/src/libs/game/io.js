@@ -7,11 +7,13 @@ const CLIENT_EVENTS = {
 
 const SERVER_EVENTS = {
     MESSAGE: 'message',
+    ERROR: 'errorMessage',
     STATE_UPDATE: 'stateUpdate'
 };
 
 const defaultConfig = {
-    [SERVER_EVENTS.MESSAGE]: logger
+    [SERVER_EVENTS.MESSAGE]: logger,
+    [SERVER_EVENTS.ERROR]: logger,
 };
 
 const io = {

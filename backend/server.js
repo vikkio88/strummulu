@@ -20,7 +20,7 @@ io.on(EVENTS.CONNECTION, c => {
     c.on(CLIENT_ACTIONS.JOIN_ROOM, data => {
         const { roomId } = data;
         console.log(`[main]: ${roomId}`);
-        server.joinRoom(roomId, c.id);
+        server.joinRoom(roomId, c);
     });
 
 });

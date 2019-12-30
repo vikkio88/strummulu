@@ -1,5 +1,6 @@
 const MESSAGES = {
     MESSAGE: 'message',
+    ERROR: 'errorMessage',
     STATE_UPDATE: 'stateUpdate'
 };
 
