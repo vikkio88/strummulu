@@ -5,6 +5,7 @@ class Server {
     constructor() {
         this.rooms = new Map();
         this.connections = new Map();
+        this.connectionRooms = new Map();
     }
 
     connected(clientId, connection) {
@@ -14,16 +15,20 @@ class Server {
 
     disconnected(clientId) {
         this.connections.delete(clientId);
+        if (this.connectionRooms.has(clientId)) {
+            const roomId = this.connectionRooms.get(clientId);
+            const room = this.rooms.get(roomId);
+            room.leave(clientId);
+        }
         console.log(`[SERVER]: ${clientId} disconnected`);
     }
-
 
     createRoom(client) {
         const room = new Room(client)
         this.rooms.set(room.id, room);
         const roomId = room.id;
-        client.emit(MESSAGES.MESSAGE, { roomId });
-        console.log(`[SERVER]: ${client.id} created room ${roomId}`);
+        this.connectionRooms.set(client.id, roomId);
+        console.log(`[SERVER]: ${client.id} created/joined room ${roomId}`);
     }
 
     joinRoom(roomId, client) {
@@ -37,7 +42,29 @@ class Server {
             return false;
         }
 
-        room.tryJoin(client);
+        const joined = room.tryJoin(client);
+        if (joined) {
+            console.log(`[SERVER]: ${clientId} joined ${roomId}`);
+            this.connectionRooms.set(clientId, roomId);
+        }
+    }
+
+    clientAction(client, type, roomId, payload) {
+        const { id: clientId } = client;
+        const room = this.rooms.get(roomId);
+
+        if (!room) {
+            client.emit(MESSAGES.ERROR, `Non exisitng room ${roomId}`);
+            console.log(`[SERVER]: ${clientId} tried performing action ${type} in non existing room ${roomId}`);
+        }
+
+        if (!room.has(client)) {
+            client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
+            console.log(`[SERVER]: ${clientId} tried performing action ${type} in room ${roomId}`);
+            return;
+        }
+
+        room.playerAction(client, type, payload);
     }
 }
 

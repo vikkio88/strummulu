@@ -1,4 +1,4 @@
-const { MESSAGES } = require('../const');
+const { MESSAGES, MESSAGE_TYPES } = require('../const');
 const generateId = () => Math.random().toString(36).substr(2, 5);
 
 class Room {
@@ -12,10 +12,16 @@ class Room {
         this.players.set(creatorId, creator);
 
         this.init();
+
+        creator.emit(MESSAGES.MESSAGE, { type: MESSAGE_TYPES.CREATED_ROOM, roomId: this.id });
     }
 
     init() {
         this.gameState = {};
+    }
+
+    has(client) {
+        return this.players.has(client.id);
     }
 
     join(client) {
@@ -29,19 +35,30 @@ class Room {
         return true;
     }
 
+    leave(clientId) {
+        this.players.delete(clientId);
+        console.log(`[room]: ${clientId} left room ${this.id}`);
+        this.broadcast({ type: MESSAGE_TYPES.LEFT_ROOM, leaverId: clientId });
+    }
+
     tryJoin(client) {
         const joined = this.join(client);
         const roomId = this.id;
         const joinerId = client.id;
-        console.log(`[room]: ${joinerId} trying joining ${roomId}`)
+        console.log(`[room]: ${joinerId} trying joining ${roomId}`);
 
         if (!joined) {
             console.log(`[room]: ${joinerId} couldnt join room ${roomId}`)
             client.emit(MESSAGES.ERROR, `Cannot join room ${roomId}`);
-            return;
+            return false;
         }
 
-        this.broadcast({ joinerId, roomId });
+        this.broadcast({ type: MESSAGE_TYPES.JOINED_ROOM, joinerId, roomId });
+        return true;
+    }
+
+    playerAction(client, type, payload) {
+        this.broadcast(`${client.id}: ${type}`);
     }
 
     broadcast(payload, messageType = MESSAGES.MESSAGE) {

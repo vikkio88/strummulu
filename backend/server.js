@@ -9,7 +9,8 @@ io.on(EVENTS.CONNECTION, c => {
     server.connected(c.id, c);
 
 
-    c.once(EVENTS.DISCONNECTED, () => {
+    c.once(EVENTS.DISCONNECTION, () => {
+        console.log(`[main]: ${c.id} disconnected`);
         server.disconnected(c.id)
     });
 
@@ -21,6 +22,12 @@ io.on(EVENTS.CONNECTION, c => {
         const { roomId } = data;
         console.log(`[main]: ${roomId}`);
         server.joinRoom(roomId, c);
+    });
+
+
+    c.on(CLIENT_ACTIONS.ACTION, data => {
+        const { type, roomId, payload } = data;
+        server.clientAction(c, type, roomId, payload);
     });
 
 });
