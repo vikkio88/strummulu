@@ -1,5 +1,5 @@
 const { MESSAGES } = require('../const');
-const Room = require('./Room');
+const TwoPlayersTurnRoom = require('./TwoPlayersTurnRoom');
 
 class Server {
     constructor() {
@@ -19,12 +19,16 @@ class Server {
             const roomId = this.connectionRooms.get(clientId);
             const room = this.rooms.get(roomId);
             room.leave(clientId);
+            if (room.players.size < 1) {
+                console.log(`[SERVER]: everyone left the room ${roomId}, destroying it`);
+                this.rooms.delete(roomId);
+            }
         }
         console.log(`[SERVER]: ${clientId} disconnected`);
     }
 
     createRoom(client) {
-        const room = new Room(client)
+        const room = new TwoPlayersTurnRoom(client)
         this.rooms.set(room.id, room);
         const roomId = room.id;
         this.connectionRooms.set(client.id, roomId);

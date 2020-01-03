@@ -1,23 +1,14 @@
 {
-  "name": "elime",
+  "name": "ws-gamelib-be",
   "version": "0.0.1",
-  "description": "[![Build Status](https://travis-ci.org/vikkio88/elime.svg?branch=master)](https://travis-ci.org/vikkio88/elime)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon ./server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NomeTemporaneo/elime.git"
+    "start": "node index.js",
+    "dev": "nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NomeTemporaneo/elime/issues"
-  },
-  "homepage": "https://github.com/NomeTemporaneo/elime#readme",
   "dependencies": {
     "express": "^4.16.4",
     "socket.io": "^2.1.1"

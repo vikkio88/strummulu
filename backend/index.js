@@ -33,4 +33,4 @@ io.on(EVENTS.CONNECTION, c => {
 });
 
 io.listen(port);
-console.log('socket.io listening on ', port);
+console.log('game server listening on ', port);

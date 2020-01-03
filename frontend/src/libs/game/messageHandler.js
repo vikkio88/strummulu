@@ -11,14 +11,23 @@ const defaultHandler = (message, currentState) => {
     return { messages };
 };
 
+const createdRoom = (message, currentState) => {
+    const { roomId, creatorId } = message;
+    return { joinedRoomId: roomId, me: creatorId };
+};
+
 const joinedRoom = (message, currentState) => {
     console.log(message);
-    const { roomId } = message;
-    return { joinedRoomId: roomId };
-}
+    const { roomId, joinerId } = message;
+    const newState = { joinedRoomId: roomId };
+    if (!currentState.me) {
+        newState.me = joinerId;
+    }
+    return newState;
+};
 
 const MESSAGE_HANDLERS = {
-    [MESSAGE_TYPES.CREATED_ROOM]: joinedRoom,
+    [MESSAGE_TYPES.CREATED_ROOM]: createdRoom,
     [MESSAGE_TYPES.JOINED_ROOM]: joinedRoom,
     [MESSAGE_TYPES.default]: defaultHandler
 };

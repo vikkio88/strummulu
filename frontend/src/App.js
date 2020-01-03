@@ -6,6 +6,7 @@ import messageHandler from './libs/game/messageHandler';
 
 class App extends Component {
   state = {
+    me: null,
     roomId: '',
     joinedRoomId: null,
     messages: [],
@@ -44,7 +45,8 @@ class App extends Component {
   }
 
   render() {
-    const { messages, gameState, roomId, joinedRoomId } = this.state;
+    const { messages, gameState, roomId, joinedRoomId, me } = this.state;
+    const myTurn = me && (me === (gameState && gameState.turn));
     return (
       <div className="App">
 
@@ -60,9 +62,11 @@ class App extends Component {
 
           {joinedRoomId && (
             <div>
-              <h3>{joinedRoomId}</h3>
-              <button onClick={() => this.action(1)}>Action 1</button>
-              <button onClick={() => this.action(2)}>Action 2</button>
+              <h3>me: {me}</h3>
+              <h3>Room: {joinedRoomId}</h3>
+              <button disabled={!myTurn} onClick={() => this.action('shoot')}>Shoot</button>
+              <button disabled={!myTurn} onClick={() => this.action('defend')}>Defend</button>
+              <button disabled={!myTurn} onClick={() => this.action('reload')}>Reload</button>
             </div>
           )}
 
@@ -77,7 +81,7 @@ class App extends Component {
           <h2>Game State</h2>
           <div>
             <pre>
-              {JSON.stringify(gameState)}
+              {JSON.stringify(gameState, null, 2)}
             </pre>
           </div>
         </div>

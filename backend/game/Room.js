@@ -11,13 +11,22 @@ class Room {
         const { id: creatorId } = creator;
         this.players.set(creatorId, creator);
 
-        this.init();
+        this.init({ creatorId });
 
-        creator.emit(MESSAGES.MESSAGE, { type: MESSAGE_TYPES.CREATED_ROOM, roomId: this.id });
+        creator.emit(MESSAGES.MESSAGE, { type: MESSAGE_TYPES.CREATED_ROOM, roomId: this.id, creatorId: creatorId });
     }
 
-    init() {
-        this.gameState = {};
+    init(params) {
+        this.gameState = {}
+        this.broadcastStateUpdate();
+    }
+
+    onJoin() {
+
+    }
+
+    onAction() {
+
     }
 
     has(client) {
@@ -31,6 +40,7 @@ class Room {
         }
 
         this.players.set(joinerId, client);
+        this.onJoin({ joinerId });
 
         return true;
     }
@@ -58,7 +68,7 @@ class Room {
     }
 
     playerAction(client, type, payload) {
-        this.broadcast(`${client.id}: ${type}`);
+        this.onAction(client, type, payload);
     }
 
     broadcast(payload, messageType = MESSAGES.MESSAGE) {
