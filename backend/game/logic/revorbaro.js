@@ -66,7 +66,7 @@ module.exports = {
         const selfAction = gameState.actions[player];
 
         const selfNewState = { ...selfState, ...resolveMatrix[selfAction][otherAction][PLAYERS.SELF] };
-        const otherNewState = { ...otherState, ...resolveMatrix[otherAction][selfAction][PLAYERS.OTHER] };
+        const otherNewState = { ...otherState, ...resolveMatrix[selfAction][otherAction][PLAYERS.OTHER] };
 
         let finished = false;
         if (selfNewState.winner || selfNewState.loser) {
