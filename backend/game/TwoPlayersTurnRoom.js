@@ -27,11 +27,11 @@ class TwoPlayersTurnRoom extends Room {
         this.passTurn(playerId);
     }
 
-    passTurn(passingId, action) {
+    passTurn(passingId) {
         const { player1, player2, actions } = this.gameState;
         const newTurn = player1 === passingId ? player2 : player1;
+        this.gameState.turn = newTurn;
         if (Object.keys(actions).length < 2) {
-            this.gameState.turn = newTurn;
             this.broadcastStateUpdate();
             return;
         }

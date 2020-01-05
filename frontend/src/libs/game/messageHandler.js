@@ -17,7 +17,6 @@ const createdRoom = (message, currentState) => {
 };
 
 const joinedRoom = (message, currentState) => {
-    console.log(message);
     const { roomId, joinerId } = message;
     const newState = { joinedRoomId: roomId };
     if (!currentState.me) {

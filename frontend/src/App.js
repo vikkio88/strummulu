@@ -44,26 +44,40 @@ class App extends Component {
     })
   }
 
+  winnerLoser(finishedAndWinner) {
+    if (finishedAndWinner) {
+      return 'YOU WON';
+    }
+
+    return 'YOU LOST';
+  }
+
   render() {
-    const { messages, gameState, roomId, joinedRoomId, me } = this.state;
+    const { gameState, roomId, joinedRoomId, me } = this.state;
+    const { waiting } = (gameState || {});
+    const { finished } = (gameState || {});
+    const finishedAndWinner = finished && gameState.players[me].winner;
     const myTurn = me && (me === (gameState && gameState.turn));
     return (
       <div className="App">
 
         <div className="actions">
           {!joinedRoomId && <button onClick={this.create}>Create</button>}
-
           {!joinedRoomId && (
             <div>
               <input type="text" value={roomId} placeholder="Room Id" onChange={({ target }) => this.setState({ roomId: target.value })} />
               <button onClick={this.join}>Join</button>
             </div>
           )}
-
-          {joinedRoomId && (
+          {finished && (
+            <h1>{this.winnerLoser(finishedAndWinner)}</h1>
+          )}
+          {!finished && joinedRoomId && (
             <div>
               <h3>me: {me}</h3>
               <h3>Room: {joinedRoomId}</h3>
+              {waiting && <h2>Waiting for Player 2</h2>}
+              {!waiting && <h2>{`${myTurn ? 'Your' : 'Enemy'} turn`}</h2>}
               <button disabled={!myTurn} onClick={() => this.action('shoot')}>Shoot</button>
               <button disabled={!myTurn} onClick={() => this.action('defend')}>Defend</button>
               <button disabled={!myTurn} onClick={() => this.action('reload')}>Reload</button>
@@ -73,11 +87,6 @@ class App extends Component {
         </div>
 
         <div className="info">
-          <h2>Messages</h2>
-          <div>
-            {messages.map((m, index) => <div key={index}>{JSON.stringify(m)}</div>)}
-          </div>
-
           <h2>Game State</h2>
           <div>
             <pre>
