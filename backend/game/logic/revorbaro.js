@@ -57,6 +57,22 @@ module.exports = {
         };
 
     },
+    canPerformAction(playerId, { type }, gameState) {
+        const { turn } = gameState;
+        const playerState = gameState.players[playerId];
+        let error = null;
+        let fallbackType = null;
+
+        if (turn !== playerId) {
+            error = 'action in wrong turn';
+        }
+        if (!playerState.loaded && type === ACTIONS.SHOOT) {
+            error = 'cannot shoot without reloading, reloading';
+            fallbackType = ACTIONS.RELOAD;
+        }
+
+        return { error, fallbackType };
+    },
     resolve(player, gameState) {
         const other = player === gameState.player1 ? gameState.player2 : gameState.player1;
         const otherState = gameState.players[other];

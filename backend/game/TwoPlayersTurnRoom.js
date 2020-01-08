@@ -17,12 +17,13 @@ class TwoPlayersTurnRoom extends Room {
 
     onAction(client, type, payload) {
         const { id: playerId } = client;
-        const { turn } = this.gameState;
-        if (turn !== playerId) {
-            console.log(`[room]: ${playerId} tried action: ${type} but wasnt their turn, was ${turn} turn`);
-            return;
+        const { error, fallbackType } = revorbaro.canPerformAction(playerId, { type }, this.gameState);
+        if (error) {
+            console.log(`[room]: ${playerId} tried action ${type}, but the check produced an error: ${error}`);
+            if (!fallbackType) return;
         }
-        this.gameState.actions[playerId] = type;
+
+        this.gameState.actions[playerId] = fallbackType || type;
         this.broadcast(`${client.id}: ${type}`);
         this.passTurn(playerId);
     }
