@@ -33,7 +33,7 @@ const getOtherPlayer = (player, gameState) => {
     return player === gameState.player1 ? gameState.player2 : gameState.player1;
 };
 
-const basePlayerState = { loaded: false, winner: false, loser: false };
+const BASE_PLAYER_STATE = { loaded: false, winner: false, loser: false };
 
 const mutations = {
     GAME_ACTION: (playerId, { type }, gameState) => {
@@ -51,8 +51,8 @@ const mutations = {
                 resolved: null,
                 actions: {},
                 players: {
-                    [playerId]: { ...basePlayerState },
-                    [other]: { ...basePlayerState }
+                    [playerId]: { ...BASE_PLAYER_STATE },
+                    [other]: { ...BASE_PLAYER_STATE }
                 }
             };
         }
@@ -73,7 +73,7 @@ module.exports = {
             winner: null,
             actions: {},
             players: {
-                [creatorId]: { ...basePlayerState }
+                [creatorId]: { ...BASE_PLAYER_STATE }
             },
             resolved: null
         };
@@ -87,7 +87,7 @@ module.exports = {
             player2: joinerId,
             players: {
                 ...gameState.players,
-                [joinerId]: { ...basePlayerState }
+                [joinerId]: { ...BASE_PLAYER_STATE }
             }
         };
 
