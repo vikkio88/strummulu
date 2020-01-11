@@ -17,22 +17,20 @@ class TwoPlayersTurnRoom extends Room {
 
     onAction(client, type, payload) {
         const { id: playerId } = client;
-        const { error, fallbackType } = revorbaro.canPerformAction(playerId, { type }, this.gameState);
+        const { error, action, mutation } = revorbaro.getMutationFromAction(playerId, { type }, this.gameState);
         if (error) {
             console.log(`[room]: ${playerId} tried action ${type}, but the check produced an error: ${error}`);
-            if (!fallbackType) return;
+            if (!action) return;
         }
 
-        this.gameState.actions[playerId] = fallbackType || type;
-        this.broadcast(`${client.id}: ${type}`);
+        this.gameState = mutation(playerId, action, this.gameState);
+        this.broadcast(`${client.id}: action chosen`);
         this.passTurn(playerId);
     }
 
     passTurn(passingId) {
-        const { player1, player2, actions } = this.gameState;
-        const newTurn = player1 === passingId ? player2 : player1;
-        this.gameState.turn = newTurn;
-        if (Object.keys(actions).length < 2) {
+        this.gameState = revorbaro.passTurn(passingId, this.gameState);
+        if (!revorbaro.needsResolving(this.gameState)) {
             this.broadcastStateUpdate();
             return;
         }

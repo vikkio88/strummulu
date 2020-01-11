@@ -2,7 +2,10 @@ const ACTIONS = {
     SHOOT: 'shoot',
     DEFEND: 'defend',
     RELOAD: 'reload',
+    RESTART: 'restart'
 };
+
+const GAME_ACTIONS = [ACTIONS.SHOOT, ACTIONS.RELOAD, ACTIONS.DEFEND];
 
 const PLAYERS = {
     SELF: 'self',
@@ -26,6 +29,36 @@ const resolveMatrix = {
     },
 };
 
+const getOtherPlayer = (player, gameState) => {
+    return player === gameState.player1 ? gameState.player2 : gameState.player1;
+};
+
+const basePlayerState = { loaded: false, winner: false, loser: false };
+
+const mutations = {
+    GAME_ACTION: (playerId, { type }, gameState) => {
+        gameState.actions[playerId] = type;
+        return gameState;
+    },
+    RESTART: (playerId, { type }, gameState) => {
+        const other = getOtherPlayer(playerId, gameState);
+        gameState.players[playerId].restartRequest = true;
+        if (gameState.players[other].restartRequest) {
+            gameState = {
+                ...gameState,
+                finished: false,
+                waiting: false,
+                actions: {},
+                players: {
+                    [playerId]: { ...basePlayerState },
+                    [other]: { ...basePlayerState }
+                }
+            };
+        }
+        return gameState;
+    }
+}
+
 
 
 module.exports = {
@@ -37,10 +70,10 @@ module.exports = {
             player1: creatorId,
             turn: null,
             winner: null,
+            actions: {},
             players: {
-                [creatorId]: { loaded: false, winner: false, loser: false }
-            },
-            actions: {}
+                [creatorId]: { ...basePlayerState }
+            }
         };
     },
     player2Joined(joinerId, gameState) {
@@ -52,26 +85,48 @@ module.exports = {
             player2: joinerId,
             players: {
                 ...gameState.players,
-                [joinerId]: { loaded: false, winner: false, loser: false }
+                [joinerId]: { ...basePlayerState }
             }
         };
 
     },
-    canPerformAction(playerId, { type }, gameState) {
+    getMutationFromAction(playerId, { type }, gameState) {
         const { turn } = gameState;
         const playerState = gameState.players[playerId];
         let error = null;
         let fallbackType = null;
+        let action = null;
+        let mutation = gameState => gameState;
+
+        if (type === ACTIONS.RESTART && !gameState.finished) {
+            error = 'tried to restart while game is not finished';
+            return { error, action, mutation };
+        }
 
         if (turn !== playerId) {
             error = 'action in wrong turn';
+            return { error, action, mutation };
         }
+
         if (!playerState.loaded && type === ACTIONS.SHOOT) {
             error = 'cannot shoot without reloading, reloading';
             fallbackType = ACTIONS.RELOAD;
         }
 
-        return { error, fallbackType };
+        type = fallbackType || type;
+        action = { type };
+        mutation = GAME_ACTIONS.includes(type) ? mutations.GAME_ACTION : mutations.RESTART;
+
+        return { error, action, mutation };
+    },
+    passTurn(passingId, gameState) {
+        const { player1, player2 } = gameState;
+        const newTurn = player1 === passingId ? player2 : player1;
+        gameState.turn = newTurn;
+        return gameState
+    },
+    needsResolving({ actions }) {
+        return Object.keys(actions).length > 1;
     },
     resolve(player, gameState) {
         const other = player === gameState.player1 ? gameState.player2 : gameState.player1;
