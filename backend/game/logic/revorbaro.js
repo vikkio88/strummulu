@@ -48,6 +48,7 @@ const mutations = {
                 ...gameState,
                 finished: false,
                 waiting: false,
+                resolved: null,
                 actions: {},
                 players: {
                     [playerId]: { ...basePlayerState },
@@ -73,7 +74,8 @@ module.exports = {
             actions: {},
             players: {
                 [creatorId]: { ...basePlayerState }
-            }
+            },
+            resolved: null
         };
     },
     player2Joined(joinerId, gameState) {
@@ -103,7 +105,7 @@ module.exports = {
             return { error, action, mutation };
         }
 
-        if (turn !== playerId) {
+        if (type !== ACTIONS.RESTART && turn !== playerId) {
             error = 'action in wrong turn';
             return { error, action, mutation };
         }
@@ -140,7 +142,9 @@ module.exports = {
         const otherNewState = { ...otherState, ...resolveMatrix[selfAction][otherAction][PLAYERS.OTHER] };
 
         let finished = false;
+        const { history = [] } = gameState;
         if (selfNewState.winner || selfNewState.loser) {
+            history.push(selfNewState.winner ? player : other);
             finished = true;
         }
 
@@ -151,6 +155,8 @@ module.exports = {
                 [player]: selfNewState,
                 [other]: otherNewState,
             },
+            history,
+            resolved: gameState.actions,
             finished
         }
     }
