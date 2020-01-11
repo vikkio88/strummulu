@@ -60,6 +60,7 @@ class Server {
         if (!room) {
             client.emit(MESSAGES.ERROR, `Non exisitng room ${roomId}`);
             console.log(`[SERVER]: ${clientId} tried performing action ${type} in non existing room ${roomId}`);
+            return;
         }
 
         if (!room.has(client)) {
