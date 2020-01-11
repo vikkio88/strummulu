@@ -57,6 +57,8 @@ class App extends Component {
     const { waiting } = (gameState || {});
     const { finished } = (gameState || {});
     const finishedAndWinner = finished && gameState.players[me].winner;
+    const restartRequested = finished && gameState.players[me].restartRequest;
+
     const myTurn = me && (me === (gameState && gameState.turn));
     return (
       <div className="App">
@@ -70,7 +72,16 @@ class App extends Component {
             </div>
           )}
           {finished && (
-            <h1>{this.winnerLoser(finishedAndWinner)}</h1>
+            <>
+              <h1>{this.winnerLoser(finishedAndWinner)}</h1>
+              {!restartRequested && (
+                <>
+                  <h2>Wanna do another game?</h2>
+                  <button onClick={() => this.action('restart')}>YES</button>
+                  <button onClick={() => { window.location.reload() }}>NO</button>
+                </>)}
+              {restartRequested && <h2>Waiting for the other player to accept</h2>}
+            </>
           )}
           {!finished && joinedRoomId && (
             <div>
