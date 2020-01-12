@@ -10,7 +10,7 @@ class Game extends Component {
     }
 
     render() {
-        const { gameState, roomId, playerId, onAction } = this.props;
+        const { gameState, roomId, playerId, onAction, onLeave } = this.props;
         const { waiting } = (gameState || {});
         const { finished } = (gameState || {});
         const finishedAndWinner = finished && gameState.players[playerId].winner;
@@ -27,9 +27,14 @@ class Game extends Component {
                             <>
                                 <h2>Wanna do another game?</h2>
                                 <button onClick={() => onAction('restart')}>YES</button>
-                                <button onClick={() => { window.location.reload() }}>NO</button>
+                                <button onClick={() => { onLeave(roomId) }}>NO</button>
                             </>)}
-                        {restartRequested && <h2>Waiting for the other player to accept</h2>}
+                        {restartRequested && (
+                            <>
+                                <h2>Waiting for the other player to accept</h2>
+                                <button onClick={() => onLeave(roomId)}>Leave Room</button>
+                            </>
+                        )}
                     </>
                 )}
                 {!finished && (

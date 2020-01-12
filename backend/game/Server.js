@@ -18,11 +18,9 @@ class Server {
         if (this.connectionRooms.has(clientId)) {
             const roomId = this.connectionRooms.get(clientId);
             const room = this.rooms.get(roomId);
+            if (!room) return;
             room.leave(clientId);
-            if (room.players.size < 1) {
-                console.log(`[SERVER]: everyone left the room ${roomId}, destroying it`);
-                this.rooms.delete(roomId);
-            }
+            this.roomCleanup(room);
         }
         console.log(`[SERVER]: ${clientId} disconnected`);
     }
@@ -70,6 +68,7 @@ class Server {
         }
 
         room.leave(clientId);
+        this.roomCleanup(room);
     }
 
     clientAction(client, type, roomId, payload) {
@@ -89,6 +88,14 @@ class Server {
         }
 
         room.playerAction(client, type, payload);
+    }
+
+    roomCleanup(room) {
+        const roomId = room.id;
+        if (room.players.size < 1) {
+            console.log(`[SERVER]: everyone left the room ${roomId}, destroying it`);
+            this.rooms.delete(roomId);
+        }
     }
 }
 

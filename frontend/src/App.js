@@ -32,6 +32,11 @@ class App extends Component {
 
   leave = roomId => {
     io.leaveRoom(roomId);
+    this.setState({
+      joinedRoomId: null,
+      messages: [],
+      gameState: {}
+    })
   }
 
   action = type => {
@@ -52,7 +57,15 @@ class App extends Component {
     return (
       <div className="App">
         {!joinedRoomId && <Lobby onJoin={this.join} onCreate={this.create} />}
-        {joinedRoomId && <Game gameState={gameState} playerId={me} roomId={joinedRoomId} onAction={this.action}/>}
+        {joinedRoomId && (
+          <Game
+            gameState={gameState}
+            playerId={me}
+            roomId={joinedRoomId}
+            onAction={this.action}
+            onLeave={this.leave}
+          />
+        )}
 
         <GameState gameState={gameState} onAction={this.action} />
 
