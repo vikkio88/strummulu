@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import io from './libs/game/io';
-import messageHandler from './libs/game/messageHandler';
-import { GameState } from './components/game';
-import { Lobby, Game } from './components/views';
+import io from 'libs/game/io';
+import messageHandler from 'libs/game/messageHandler';
+//import { GameState } from 'components/game';
+import { Lobby, Game } from 'components/views';
 
 class App extends Component {
   state = {
@@ -56,6 +56,7 @@ class App extends Component {
     const { gameState, joinedRoomId, me } = this.state;
     return (
       <div className="App">
+        <h1>Revorbaro-Multiplayer</h1>
         {!joinedRoomId && <Lobby onJoin={this.join} onCreate={this.create} />}
         {joinedRoomId && (
           <Game
@@ -67,7 +68,7 @@ class App extends Component {
           />
         )}
 
-        <GameState gameState={gameState} onAction={this.action} />
+        {/*<GameState gameState={gameState} onAction={this.action} />*/}
 
       </div>
     );

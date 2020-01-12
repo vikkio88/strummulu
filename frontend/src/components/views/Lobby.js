@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Input } from 'components/common';
 
 class Lobby extends Component {
     state = {
@@ -9,13 +10,14 @@ class Lobby extends Component {
         const { onCreate, onJoin } = this.props;
         const { roomId } = this.state;
         return (
-            <>
-                <button onClick={onCreate}>Create</button>
+            <div className="view">
+                <h2>Game Lobby</h2>
+                <Button onClick={onCreate}>Create Room</Button>
                 <div>
-                    <input type="text" value={roomId} placeholder="Room Id" onChange={({ target }) => this.setState({ roomId: target.value })} />
-                    <button onClick={() => onJoin(roomId)}>Join</button>
+                    <Button disabled={roomId.length < 3} onClick={() => onJoin(roomId)}>Join Room</Button>
+                    <Input type="text" value={roomId} placeholder="Room Id" onChange={({ target }) => this.setState({ roomId: target.value })} />
                 </div>
-            </>
+            </div>
         );
     }
 }
