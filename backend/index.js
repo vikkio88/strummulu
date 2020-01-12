@@ -20,8 +20,12 @@ io.on(EVENTS.CONNECTION, c => {
 
     c.on(CLIENT_ACTIONS.JOIN_ROOM, data => {
         const { roomId } = data;
-        console.log(`[main]: ${roomId}`);
         server.joinRoom(roomId, c);
+    });
+    
+    c.on(CLIENT_ACTIONS.LEAVE_ROOM, data => {
+        const { roomId } = data;
+        server.leaveRoom(roomId, c);
     });
 
 

@@ -53,6 +53,25 @@ class Server {
         }
     }
 
+    leaveRoom(roomId, client) {
+        const { id: clientId } = client;
+        const room = this.rooms.get(roomId);
+
+        if (!room) {
+            client.emit(MESSAGES.ERROR, `Non exisitng room ${roomId}`);
+            console.log(`[SERVER]: ${clientId} tried to leave a non existing room ${roomId}`);
+            return;
+        }
+
+        if (!room.has(client)) {
+            client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
+            console.log(`[SERVER]: ${clientId} tried to leave room ${roomId} but it wasnt in`);
+            return;
+        }
+
+        room.leave(clientId);
+    }
+
     clientAction(client, type, roomId, payload) {
         const { id: clientId } = client;
         const room = this.rooms.get(roomId);

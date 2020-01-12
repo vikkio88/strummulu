@@ -21,11 +21,15 @@ class Room {
         this.broadcastStateUpdate();
     }
 
-    onJoin() {
+    onJoin(params) {
 
     }
 
-    onAction() {
+    onAction(params) {
+
+    }
+
+    onLeave(params) {
 
     }
 
@@ -48,6 +52,7 @@ class Room {
     leave(clientId) {
         this.players.delete(clientId);
         console.log(`[room]: ${clientId} left room ${this.id}`);
+        this.onLeave({ leaverId: clientId });
         this.broadcast({ type: MESSAGE_TYPES.LEFT_ROOM, leaverId: clientId });
     }
 
@@ -68,7 +73,7 @@ class Room {
     }
 
     playerAction(client, type, payload) {
-        this.onAction(client, type, payload);
+        this.onAction({ client, type, payload });
     }
 
     broadcast(payload, messageType = MESSAGES.MESSAGE) {

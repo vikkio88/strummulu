@@ -3,6 +3,7 @@ const logger = msg => console.log(msg);
 const CLIENT_EVENTS = {
     CREATE_ROOM: 'createRoom',
     JOIN_ROOM: 'joinRoom',
+    LEAVE_ROOM: 'leaveRoom',
     ACTION: 'action'
 };
 
@@ -45,6 +46,9 @@ const io = {
     },
     joinRoom(roomId) {
         this.socket.emit(CLIENT_EVENTS.JOIN_ROOM, { roomId });
+    },
+    leaveRoom(roomId) {
+        this.socket.emit(CLIENT_EVENTS.LEAVE_ROOM, { roomId });
     },
     sendAction(type, roomId, payload = {}) {
         this.socket.emit(CLIENT_EVENTS.ACTION, { type, roomId, payload })

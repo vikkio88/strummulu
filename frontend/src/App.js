@@ -30,6 +30,10 @@ class App extends Component {
     io.joinRoom(roomId);
   }
 
+  leave = roomId => {
+    io.leaveRoom(roomId);
+  }
+
   action = type => {
     const { joinedRoomId } = this.state;
     io.sendAction(type, joinedRoomId);

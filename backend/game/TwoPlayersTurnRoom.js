@@ -9,13 +9,19 @@ class TwoPlayersTurnRoom extends Room {
         this.broadcastStateUpdate();
     }
 
+    onLeave(params) {
+        const { leaverId } = params;
+        this.gameState = revorbaro.forfait(leaverId, this.gameState);
+        this.broadcastStateUpdate();
+    }
+
     onJoin(params) {
         const { joinerId } = params;
         this.gameState = revorbaro.player2Joined(joinerId, this.gameState);
         this.broadcastStateUpdate();
     }
 
-    onAction(client, type, payload) {
+    onAction({ client, type, payload }) {
         const { id: playerId } = client;
         const { error, action, mutation } = revorbaro.getMutationFromAction(playerId, { type }, this.gameState);
         if (error) {

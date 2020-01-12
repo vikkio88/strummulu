@@ -92,6 +92,20 @@ module.exports = {
         };
 
     },
+    forfait(leaverId, gameState) {
+        const winnerId = getOtherPlayer(leaverId, gameState);
+        const { history = [] } = gameState;
+        history.push(winnerId);
+        return {
+            ...gameState,
+            finished: true,
+            players: {
+                [winnerId]: { ...gameState.players[winnerId], winner: true, loser: false },
+                [leaverId]: { ...gameState.players[winnerId], winner: false, loser: true },
+            },
+            history
+        }
+    },
     getMutationFromAction(playerId, { type }, gameState) {
         const { turn } = gameState;
         const playerState = gameState.players[playerId];
