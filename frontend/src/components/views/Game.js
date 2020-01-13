@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'components/common';
+import { Button, Input, Icon } from 'components/common';
+import { Bullet, Actions } from 'components/game';
 
 class Game extends Component {
     winnerLoser(finishedAndWinner) {
@@ -11,9 +12,9 @@ class Game extends Component {
     }
 
     render() {
-        const { gameState, roomId, playerId, onAction, onLeave } = this.props;
-        const { waiting } = (gameState || {});
-        const { finished } = (gameState || {});
+        const { gameState = {}, roomId, playerId, onAction, onLeave } = this.props;
+        const { waiting, finished, resolved } = gameState;
+        const { loaded } = gameState.players[playerId];
         const finishedAndWinner = finished && gameState.players[playerId].winner;
         const restartRequested = finished && gameState.players[playerId].restartRequest;
 
@@ -43,14 +44,30 @@ class Game extends Component {
                         </>
                     )}
                     {!finished && (
-                        <div>
-                            {waiting && <h3>Room: <Input disabled value={roomId} /></h3>}
-                            {waiting && <h2>Waiting for Player 2</h2>}
-                            {!waiting && <h2>{`${myTurn ? 'Your' : 'Enemy'} turn`}</h2>}
-                            <Button disabled={!myTurn} onClick={() => onAction('shoot')}>Shoot</Button>
-                            <Button disabled={!myTurn} onClick={() => onAction('defend')}>Defend</Button>
-                            <Button disabled={!myTurn} onClick={() => onAction('reload')}>Reload</Button>
-                        </div>
+                        <>
+                            <div>
+                                {waiting && <h3>Room: <Input disabled value={roomId} /></h3>}
+                                {waiting && <h2>Waiting for Player 2</h2>}
+                                {!waiting && (
+                                    <div className="status">
+                                        <Bullet loaded={loaded} />
+                                        <h3>{`${myTurn ? 'Your' : 'Enemy'} turn`}</h3>
+                                    </div>
+                                )}
+                                <Button disabled={!myTurn || !loaded} onClick={() => onAction('shoot')}>
+                                    <Icon type="shoot" />
+                                </Button>
+                                <Button disabled={!myTurn} onClick={() => onAction('defend')}>
+                                    <Icon type="defend" />
+                                </Button>
+                                <Button disabled={!myTurn} onClick={() => onAction('reload')}>
+                                    <Icon type="reload" />
+                                </Button>
+                            </div>
+                            <div>
+                                {resolved && <Actions actions={resolved} playerId={playerId} />}
+                            </div>
+                        </>
                     )}
 
                 </div>
