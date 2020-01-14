@@ -54,13 +54,13 @@ class Game extends Component {
                                         <h3>{`${myTurn ? 'Your' : 'Enemy'} turn`}</h3>
                                     </div>
                                 )}
-                                <Button disabled={!myTurn || !loaded} onClick={() => onAction('shoot')}>
+                                <Button icon disabled={!myTurn || !loaded} onClick={() => onAction('shoot')}>
                                     <Icon type="shoot" />
                                 </Button>
-                                <Button disabled={!myTurn} onClick={() => onAction('defend')}>
+                                <Button icon disabled={!myTurn} onClick={() => onAction('defend')}>
                                     <Icon type="defend" />
                                 </Button>
-                                <Button disabled={!myTurn} onClick={() => onAction('reload')}>
+                                <Button icon disabled={!myTurn} onClick={() => onAction('reload')}>
                                     <Icon type="reload" />
                                 </Button>
                             </div>

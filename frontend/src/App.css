@@ -15,6 +15,29 @@
   padding: 80px;
   padding-top: 40px;
 }
+
+@media screen and (max-width:500px) {
+  .view {
+    padding: 40px;
+    padding-top: 10px;
+  }
+
+  .joinActions {
+    display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+  }
+
+  .joinActions .btn {
+    flex:1;
+  }
+
+  .joinActions .input {
+    flex: 3;
+  }
+ }
+
 .view h2{
   text-align: center;
   font-size: 25px;
@@ -88,3 +111,25 @@
   align-items: center;
   justify-content: center;
 }
+
+.btn-action-icon img {
+  height: 50px;
+}
+
+@media screen and (max-width:500px) {
+  .btn {
+    padding: 10px 20px;
+  }
+
+  .input {
+    padding: 10px 20px;
+    margin: 0;
+  }
+  .btn-action-icon {
+    padding:25px 25px;
+  }
+
+  .btn-action-icon img {
+    height: 30px;
+  }
+ }

@@ -13,9 +13,9 @@ class Lobby extends Component {
             <div className="view">
                 <h2>Game Lobby</h2>
                 <Button onClick={onCreate}>Create Room</Button>
-                <div>
-                    <Button disabled={roomId.length < 3} onClick={() => onJoin(roomId)}>Join Room</Button>
+                <div className="joinActions">
                     <Input type="text" value={roomId} placeholder="Room Id" onChange={({ target }) => this.setState({ roomId: target.value })} />
+                    <Button disabled={roomId.length < 3} onClick={() => onJoin(roomId)}>Join Room</Button>
                 </div>
             </div>
         );

@@ -56,7 +56,6 @@ class App extends Component {
     const { gameState, joinedRoomId, me } = this.state;
     return (
       <div className="App">
-        <h1>Revorbaro-Multiplayer</h1>
         {!joinedRoomId && <Lobby onJoin={this.join} onCreate={this.create} />}
         {joinedRoomId && (
           <Game
