@@ -15,7 +15,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "mv build/index.html build/200.html && surge --domain revorbaro-ws.surge.sh build/",
+    "buildDeploy": "GENERATE_SOURCEMAP=false react-scripts build && npm run deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
