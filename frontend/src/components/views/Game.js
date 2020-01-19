@@ -13,13 +13,14 @@ class Game extends Component {
 
     render() {
         const { gameState = {}, roomId, playerId, onAction, onLeave } = this.props;
-        const { waiting, finished, resolved } = gameState;
+        const { waiting, finished, resolved, actions } = gameState;
         const { loaded } = gameState.players[playerId];
         const finishedAndWinner = finished && gameState.players[playerId].winner;
         const restartRequested = finished && gameState.players[playerId].restartRequest;
 
         const myTurn = playerId && (playerId === (gameState && gameState.turn));
 
+        console.log(Object.keys(actions).length);
         return (
             <div className="view">
 
@@ -65,7 +66,12 @@ class Game extends Component {
                                 </Button>
                             </div>
                             <div>
-                                {resolved && <Actions actions={resolved} playerId={playerId} />}
+                                {resolved && (
+                                    <Actions
+                                        actions={resolved}
+                                        playerId={playerId}
+                                    />
+                                )}
                             </div>
                         </>
                     )}
