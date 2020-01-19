@@ -1,4 +1,6 @@
 import openSocket from 'socket.io-client';
+const { REACT_APP_GAME_BACKEND_URL } = process.env;
+
 const logger = msg => console.log(msg);
 const CLIENT_EVENTS = {
     CREATE_ROOM: 'createRoom',
@@ -22,7 +24,7 @@ const io = {
     EVENTS: SERVER_EVENTS,
 
     init(config = {}) {
-        this.socket = openSocket('http://localhost:5000');
+        this.socket = openSocket(REACT_APP_GAME_BACKEND_URL);
         config = { ...defaultConfig, ...config }
         this.bindEvents(config);
     },
