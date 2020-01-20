@@ -4,7 +4,7 @@ import './App.css';
 import { preloadAssets } from 'libs';
 import io from 'libs/game/io';
 import messageHandler from 'libs/game/messageHandler';
-import { GameState } from 'components/game';
+//import { GameState } from 'components/game';
 import { Lobby, Game } from 'components/views';
 
 class App extends Component {
@@ -69,7 +69,7 @@ class App extends Component {
             onLeave={this.leave}
           />
         )}
-        {<GameState gameState={gameState} onAction={this.action} />}
+        {/*<GameState gameState={gameState} onAction={this.action} />*/}
 
       </div>
     );

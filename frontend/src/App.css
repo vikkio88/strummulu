@@ -16,6 +16,7 @@
   padding-top: 40px;
 }
 
+
 @media screen and (max-width:500px) {
   .view {
     padding: 40px;
@@ -23,6 +24,13 @@
   }
 
   .joinActions {
+    display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+  }
+  
+  .joinActionsButtons {
     display: flex;
    flex-direction: row;
    justify-content: center;

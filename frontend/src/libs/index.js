@@ -12,6 +12,7 @@ export const preloadAssets = () => {
         '/assets/music/defend.mp3',
         '/assets/music/shoot.mp3',
         '/assets/music/reload.mp3',
+        '/assets/music/dead.mp3',
     ];
 
     images.forEach(imgUrl => {

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { playSounds } from 'libs';
 import { Button, Input, Icon } from 'components/common';
-import { Bullet, Actions } from 'components/game';
+import { Bullet, Actions, Score } from 'components/game';
+
+let playedSound = false;
 
 class Game extends Component {
     winnerLoser(finishedAndWinner) {
@@ -13,14 +16,22 @@ class Game extends Component {
 
     render() {
         const { gameState = {}, roomId, playerId, onAction, onLeave } = this.props;
-        const { waiting, finished, resolved, actions } = gameState;
+        const { waiting, finished, resolved, actions, history } = gameState;
         const { loaded } = gameState.players[playerId];
         const finishedAndWinner = finished && gameState.players[playerId].winner;
         const restartRequested = finished && gameState.players[playerId].restartRequest;
 
         const myTurn = playerId && (playerId === (gameState && gameState.turn));
 
-        console.log(Object.keys(actions).length);
+        if (finished && !playedSound) {
+            playSounds(['shoot', 'dead']);
+            playedSound = true;
+        }
+
+        if (!finished && playedSound) {
+            playedSound = false;
+        }
+
         return (
             <div className="view">
 
@@ -28,6 +39,7 @@ class Game extends Component {
                     {finished && (
                         <>
                             <h1>{this.winnerLoser(finishedAndWinner)}</h1>
+                            <Score me={playerId} history={history} />
                             {!restartRequested && (
                                 <>
                                     <h2>Do you want to play another game?</h2>
@@ -68,6 +80,7 @@ class Game extends Component {
                             <div>
                                 {resolved && (
                                     <Actions
+                                        playSound={[0, 2].includes(Object.keys(actions).length)}
                                         actions={resolved}
                                         playerId={playerId}
                                     />
