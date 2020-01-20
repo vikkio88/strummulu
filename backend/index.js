@@ -14,8 +14,8 @@ io.on(EVENTS.CONNECTION, c => {
         server.disconnected(c.id)
     });
 
-    c.on(CLIENT_ACTIONS.CREATE_ROOM, () => {
-        server.createRoom(c);
+    c.on(CLIENT_ACTIONS.CREATE_ROOM, data => {
+        server.createRoom(c, data);
     });
 
     c.on(CLIENT_ACTIONS.JOIN_ROOM, data => {
