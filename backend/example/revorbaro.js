@@ -1,3 +1,4 @@
+const GameLogicInterface = require('../game/logic/GameLogicInterface');
 const ACTIONS = {
     SHOOT: 'shoot',
     DEFEND: 'defend',
@@ -58,11 +59,9 @@ const mutations = {
         }
         return gameState;
     }
-}
+};
 
-
-
-module.exports = {
+class RevorbaroGameLogic extends GameLogicInterface {
     startingGameState(creatorId, gameState) {
         return {
             ...gameState,
@@ -77,7 +76,8 @@ module.exports = {
             },
             resolved: null
         };
-    },
+    }
+
     player2Joined(joinerId, gameState) {
         return {
             ...gameState,
@@ -91,7 +91,8 @@ module.exports = {
             }
         };
 
-    },
+    }
+
     forfait(leaverId, gameState) {
         const winnerId = getOtherPlayer(leaverId, gameState);
         const { history = [] } = gameState;
@@ -105,7 +106,8 @@ module.exports = {
             },
             history
         }
-    },
+    }
+
     getMutationFromAction(playerId, { type }, gameState) {
         const { turn } = gameState;
         const playerState = gameState.players[playerId];
@@ -134,16 +136,19 @@ module.exports = {
         mutation = GAME_ACTIONS.includes(type) ? mutations.GAME_ACTION : mutations.RESTART;
 
         return { error, action, mutation };
-    },
+    }
+
     passTurn(passingId, gameState) {
         const { player1, player2 } = gameState;
         const newTurn = player1 === passingId ? player2 : player1;
         gameState.turn = newTurn;
         return gameState
-    },
+    }
+
     needsResolving({ actions }) {
         return Object.keys(actions).length > 1;
-    },
+    }
+
     resolve(player, gameState) {
         const other = player === gameState.player1 ? gameState.player2 : gameState.player1;
         const otherState = gameState.players[other];
@@ -175,6 +180,8 @@ module.exports = {
         }
     }
 }
+
+module.exports = RevorbaroGameLogic;
 
 
 

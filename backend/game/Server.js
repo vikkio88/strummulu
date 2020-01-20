@@ -1,5 +1,6 @@
 const { MESSAGES } = require('../const');
-const TwoPlayersTurnRoom = require('./TwoPlayersTurnRoom');
+const { gameRoomFactory, GAME_TYPES } = require('./GameRoomFactory');
+const RevorbaroGameLogic = require('../example/revorbaro');
 
 class Server {
     constructor() {
@@ -25,8 +26,9 @@ class Server {
         console.log(`[SERVER]: ${clientId} disconnected`);
     }
 
-    createRoom(client) {
-        const room = new TwoPlayersTurnRoom(client)
+    createRoom(client, data) {
+        console.log('create room data', data);
+        const room = gameRoomFactory(GAME_TYPES.TWO_PLAYERS_TURN_BASED, new RevorbaroGameLogic(), client);
         this.rooms.set(room.id, room);
         const roomId = room.id;
         this.connectionRooms.set(client.id, roomId);
