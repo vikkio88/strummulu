@@ -18,9 +18,17 @@
 
 
 @media screen and (max-width:500px) {
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
   .view {
+    margin-top: 100px;
+    border: none;
     padding: 40px;
-    padding-top: 10px;
   }
 
   .joinActions {
