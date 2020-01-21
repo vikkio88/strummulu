@@ -1,68 +1,45 @@
+# Revorbaro-strummulu-Frontend
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+The game is running at [https://revorbaro-ws.surge.sh](https://revorbaro-ws.surge.sh)
 
-In the project directory, you can run:
+## How it works
 
-### `npm start`
+### Setup
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```js
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+// on App.js
 
-### `npm test`
+// we create the client
+const client = strummulu(REACT_APP_GAME_BACKEND_URL);
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+// we initialise it, on componentDidMount
+client.init({
+    [client.EVENTS.MESSAGE]: msg => this.messageHandler(msg),
+    [client.EVENTS.ERROR]: msg => this.messageHandler(msg),
+    [client.EVENTS.STATE_UPDATE]: data => this.gameStateUpdate(data)
+});
+```
 
-### `npm run build`
+There are 3 type of `EVENTS` that a `client` needs to handle: 
+- `MESSAGE`: Simple message, used to setup the game
+- `ERROR`: Will contain the errors raised by the server
+- `STATE_UPDATE`: will have the new game state, it means that something has happened that made the game state update.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Client Actions
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```js
+// a client can create e room
+client.createRoom();
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+// it can join a room (given the right room id)
+client.joinRoom(roomId);
 
-### `npm run eject`
+// it can leave the room
+client.leaveRoom(roomId);
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+// and can triggere game actions, those will be handled by the game logic class on the server
+client.sendAction(type, joinedRoomId);
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```
