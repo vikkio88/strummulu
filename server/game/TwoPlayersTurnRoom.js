@@ -1,7 +1,5 @@
 const Room = require('./Room');
 
-const revorbaro = require('../example/revorbaro');
-
 class TwoPlayersTurnRoom extends Room {
     init(params) {
         const { creatorId } = params;

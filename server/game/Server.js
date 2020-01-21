@@ -1,9 +1,8 @@
 const { MESSAGES } = require('../const');
-const { gameRoomFactory, GAME_TYPES } = require('./GameRoomFactory');
-const RevorbaroGameLogic = require('../example/revorbaro');
 
 class Server {
-    constructor() {
+    constructor(config) {
+        this.roomFactory = config.roomFactory || null;
         this.rooms = new Map();
         this.connections = new Map();
         this.connectionRooms = new Map();
@@ -27,8 +26,7 @@ class Server {
     }
 
     createRoom(client, data) {
-        console.log('create room data', data);
-        const room = gameRoomFactory(GAME_TYPES.TWO_PLAYERS_TURN_BASED, new RevorbaroGameLogic(), client);
+        const room = this.roomFactory(client, data);
         this.rooms.set(room.id, room);
         const roomId = room.id;
         this.connectionRooms.set(client.id, roomId);

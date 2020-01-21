@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 
 import { preloadAssets } from 'libs';
-import io from 'libs/game/io';
-import messageHandler from 'libs/game/messageHandler';
+import { strummulu, messageHandler } from 'strummulu-client';
 //import { GameState } from 'components/game';
 import { Lobby, Game } from 'components/views';
+
+const { REACT_APP_GAME_BACKEND_URL } = process.env;
+const client = strummulu(REACT_APP_GAME_BACKEND_URL);
+
 
 class App extends Component {
   state = {
@@ -24,15 +27,15 @@ class App extends Component {
   }
 
   create = () => {
-    io.createRoom();
+    client.createRoom();
   }
 
   join = roomId => {
-    io.joinRoom(roomId);
+    client.joinRoom(roomId);
   }
 
   leave = roomId => {
-    io.leaveRoom(roomId);
+    client.leaveRoom(roomId);
     this.setState({
       joinedRoomId: null,
       messages: [],
@@ -42,14 +45,14 @@ class App extends Component {
 
   action = type => {
     const { joinedRoomId } = this.state;
-    io.sendAction(type, joinedRoomId);
+    client.sendAction(type, joinedRoomId);
   }
 
   componentDidMount() {
-    io.init({
-      [io.EVENTS.MESSAGE]: msg => this.messageHandler(msg),
-      [io.EVENTS.ERROR]: msg => this.messageHandler(msg),
-      [io.EVENTS.STATE_UPDATE]: data => this.gameStateUpdate(data)
+    client.init({
+      [client.EVENTS.MESSAGE]: msg => this.messageHandler(msg),
+      [client.EVENTS.ERROR]: msg => this.messageHandler(msg),
+      [client.EVENTS.STATE_UPDATE]: data => this.gameStateUpdate(data)
     });
 
     preloadAssets();

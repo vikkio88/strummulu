@@ -1,4 +1,5 @@
-const GameLogicInterface = require('../game/logic/GameLogicInterface');
+const GameLogicInterface = require('strummulu-server/game/logic/GameLogicInterface');
+
 const ACTIONS = {
     SHOOT: 'shoot',
     DEFEND: 'defend',
