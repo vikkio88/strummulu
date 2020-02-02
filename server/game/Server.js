@@ -2,7 +2,9 @@ const { MESSAGES } = require('../const');
 
 class Server {
     constructor(config) {
-        this.roomFactory = config.roomFactory || null;
+        const { roomFactory } = config;
+        if (!roomFactory) throw Error('Empty roomFactory');
+        this.roomFactory = roomFactory;
         this.rooms = new Map();
         this.connections = new Map();
         this.connectionRooms = new Map();
