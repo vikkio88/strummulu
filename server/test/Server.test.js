@@ -42,7 +42,7 @@ class NotInRoom extends MockRoom {
 
 describe('Server class tests', () => {
     const mockRoomInstance = new MockRoom();
-    const config = { roomFactory: () => mockRoomInstance };
+    const config = { roomFactory: () => mockRoomInstance, verbose: false };
     const factory = (conf = config) => new Server(conf);
 
     describe('constructor', () => {
@@ -117,7 +117,7 @@ describe('Server class tests', () => {
 
         it('should not let a client join a room if the check fails at room level', () => {
             const closedRoomInstance = new MockClosedRoom();
-            const config = { roomFactory: () => closedRoomInstance };
+            const config = { roomFactory: () => closedRoomInstance, verbose: false };
             const joiner = { id: 'someJoinerId', emit(type) { return type; } };
             const server = factory(config);
             const creator = { id: 'someClientId' };
@@ -149,7 +149,7 @@ describe('Server class tests', () => {
 
         it('should not let a client leave a room if the client is not in it', () => {
             const roomInstance = new NotInRoom();
-            const config = { roomFactory: () => roomInstance };
+            const config = { roomFactory: () => roomInstance, verbose: false };
             const server = factory(config);
             const creator = { id: 'someClientId' };
             const joiner = { id: 'someJoinerId', emit(type) { return type; } };
@@ -181,7 +181,7 @@ describe('Server class tests', () => {
 
         it('should not allow the user to perform an action if he is not in the room', () => {
             const roomInstance = new NotInRoom();
-            const config = { roomFactory: () => roomInstance };
+            const config = { roomFactory: () => roomInstance, verbose: false };
             const server = factory(config);
             const creator = { id: 'someClientId' };
             const joiner = { id: 'someJoinerId', emit(type) { return type; } };

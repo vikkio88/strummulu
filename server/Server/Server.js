@@ -2,8 +2,10 @@ const { MESSAGES } = require('../const');
 
 class Server {
     constructor(config) {
-        const { roomFactory } = config;
+        const { roomFactory, verbose = true } = config;
         if (!roomFactory) throw Error('Empty roomFactory');
+
+        this.verbose = verbose;
         this.roomFactory = roomFactory;
         this.rooms = new Map();
         this.connections = new Map();
@@ -12,7 +14,7 @@ class Server {
 
     connected(clientId, connection) {
         this.connections.set(clientId, connection);
-        console.log(`[SERVER]: ${clientId} connected`);
+        this.log(`${clientId} connected`);
     }
 
     disconnected(clientId) {
@@ -24,7 +26,7 @@ class Server {
             room.leave(clientId);
             this.roomCleanup(room);
         }
-        console.log(`[SERVER]: ${clientId} disconnected`);
+        this.log(`${clientId} disconnected`);
     }
 
     createRoom(client, data) {
@@ -32,23 +34,23 @@ class Server {
         this.rooms.set(room.id, room);
         const roomId = room.id;
         this.connectionRooms.set(client.id, roomId);
-        console.log(`[SERVER]: ${client.id} created/joined room ${roomId}`);
+        this.log(`${client.id} created/joined room ${roomId}`);
     }
 
     joinRoom(roomId, client) {
         const { id: clientId } = client;
-        console.log(`[SERVER]: ${clientId} entering room ${roomId}`);
+        this.log(`${clientId} entering room ${roomId}`);
         const room = this.rooms.get(roomId);
 
         if (!room) {
-            console.log(`[SERVER]: ${clientId} try entering non existing room ${roomId}`);
+            this.log(`${clientId} try entering non existing room ${roomId}`);
             client.emit(MESSAGES.ERROR, `Room ${roomId} does not exist`);
             return false;
         }
 
         const joined = room.tryJoin(client);
         if (joined) {
-            console.log(`[SERVER]: ${clientId} joined ${roomId}`);
+            this.log(`${clientId} joined ${roomId}`);
             this.connectionRooms.set(clientId, roomId);
             return true;
         }
@@ -62,13 +64,13 @@ class Server {
 
         if (!room) {
             client.emit(MESSAGES.ERROR, `Non existing room ${roomId}`);
-            console.log(`[SERVER]: ${clientId} tried to leave a non existing room ${roomId}`);
+            this.log(`${clientId} tried to leave a non existing room ${roomId}`);
             return false;
         }
 
         if (!room.has(client)) {
             client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
-            console.log(`[SERVER]: ${clientId} tried to leave room ${roomId} but it wasn't in`);
+            this.log(`${clientId} tried to leave room ${roomId} but it wasn't in`);
             return false;
         }
 
@@ -83,13 +85,13 @@ class Server {
 
         if (!room) {
             client.emit(MESSAGES.ERROR, `Non existing room ${roomId}`);
-            console.log(`[SERVER]: ${clientId} tried performing action ${type} in non existing room ${roomId}`);
+            this.log(`${clientId} tried performing action ${type} in non existing room ${roomId}`);
             return false;
         }
 
         if (!room.has(client)) {
             client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
-            console.log(`[SERVER]: ${clientId} tried performing action ${type} in room ${roomId}`);
+            this.log(`${clientId} tried performing action ${type} in room ${roomId}`);
             return false;
         }
 
@@ -100,9 +102,14 @@ class Server {
     roomCleanup(room) {
         const roomId = room.id;
         if (room.players.size < 1) {
-            console.log(`[SERVER]: everyone left the room ${roomId}, destroying it`);
+            this.log(`everyone left the room ${roomId}, destroying it`);
             this.rooms.delete(roomId);
         }
+    }
+
+    log(message) {
+        if (!this.verbose) return;
+        console.log(`[SERVER]: ${message}`);
     }
 }
 
