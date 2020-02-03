@@ -94,7 +94,7 @@ class RevorbaroGameLogic extends GameLogicInterface {
 
     }
 
-    forfait(leaverId, gameState) {
+    forfeit(leaverId, gameState) {
         const winnerId = getOtherPlayer(leaverId, gameState);
         const { history = [] } = gameState;
         history.push(winnerId);

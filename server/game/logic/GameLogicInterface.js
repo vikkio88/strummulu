@@ -1,7 +1,7 @@
 class GameLogicInterface {
     startingGameState(creatorId, gameState) { }
     player2Joined(joinerId, gameState) { }
-    forfait(leaverId, gameState) { }
+    forfeit(leaverId, gameState) { }
     getMutationFromAction(playerId, action, gameState) { }
     passTurn(passingId, gameState) { }
     needsResolving(gameState) { }

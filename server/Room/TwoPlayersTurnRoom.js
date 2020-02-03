@@ -9,7 +9,7 @@ class TwoPlayersTurnRoom extends Room {
 
     onLeave(params) {
         const { leaverId } = params;
-        this.gameState = this.gameLogic.forfait(leaverId, this.gameState);
+        this.gameState = this.gameLogic.forfeit(leaverId, this.gameState);
         this.broadcastStateUpdate();
     }
 
@@ -21,7 +21,7 @@ class TwoPlayersTurnRoom extends Room {
 
     onAction({ client, type, payload }) {
         const { id: playerId } = client;
-        const { error, action, mutation } = this.gameLogic.getMutationFromAction(playerId, { type }, this.gameState);
+        const { error, action, mutation } = this.gameLogic.getMutationFromAction(playerId, { type, payload }, this.gameState);
         if (error) {
             console.log(`[room]: ${playerId} tried action ${type}, but the check produced an error: ${error}`);
             if (!action) return;

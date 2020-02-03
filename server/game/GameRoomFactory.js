@@ -1,4 +1,4 @@
-const TwoPlayersTurnRoom = require('./TwoPlayersTurnRoom');
+const TwoPlayersTurnRoom = require('../Room/TwoPlayersTurnRoom');
 const GAME_TYPES = {
     TWO_PLAYERS_TURN_BASED: 'twoPlayersTurnBased'
 };

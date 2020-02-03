@@ -50,7 +50,10 @@ class Server {
         if (joined) {
             console.log(`[SERVER]: ${clientId} joined ${roomId}`);
             this.connectionRooms.set(clientId, roomId);
+            return true;
         }
+
+        return false;
     }
 
     leaveRoom(roomId, client) {
@@ -58,19 +61,20 @@ class Server {
         const room = this.rooms.get(roomId);
 
         if (!room) {
-            client.emit(MESSAGES.ERROR, `Non exisitng room ${roomId}`);
+            client.emit(MESSAGES.ERROR, `Non existing room ${roomId}`);
             console.log(`[SERVER]: ${clientId} tried to leave a non existing room ${roomId}`);
-            return;
+            return false;
         }
 
         if (!room.has(client)) {
             client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
-            console.log(`[SERVER]: ${clientId} tried to leave room ${roomId} but it wasnt in`);
-            return;
+            console.log(`[SERVER]: ${clientId} tried to leave room ${roomId} but it wasn't in`);
+            return false;
         }
 
         room.leave(clientId);
         this.roomCleanup(room);
+        return true;
     }
 
     clientAction(client, type, roomId, payload) {
@@ -78,7 +82,7 @@ class Server {
         const room = this.rooms.get(roomId);
 
         if (!room) {
-            client.emit(MESSAGES.ERROR, `Non exisitng room ${roomId}`);
+            client.emit(MESSAGES.ERROR, `Non existing room ${roomId}`);
             console.log(`[SERVER]: ${clientId} tried performing action ${type} in non existing room ${roomId}`);
             return;
         }

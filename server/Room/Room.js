@@ -64,7 +64,7 @@ class Room {
         console.log(`[room]: ${joinerId} trying joining ${roomId}`);
 
         if (!joined) {
-            console.log(`[room]: ${joinerId} couldnt join room ${roomId}`)
+            console.log(`[room]: ${joinerId} couldn't join room ${roomId}`)
             client.emit(MESSAGES.ERROR, `Cannot join room ${roomId}`);
             return false;
         }

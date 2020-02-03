@@ -1,6 +1,6 @@
 const socketIo = require('socket.io');
 const { EVENTS, CLIENT_ACTIONS } = require('./const');
-const Server = require('./game/Server');
+const GameLogicInterface = require('./game/logic/GameLogicInterface');
 const { GAME_TYPES, gameRoomFactory } = require('./game/GameRoomFactory');
 
 
@@ -38,4 +38,12 @@ const strummuluServerFactory = (server, io = socketIo()) => {
 }
 
 
-module.exports = { GAME_TYPES, CLIENT_ACTIONS, EVENTS, strummuluServerFactory, Server, gameRoomFactory, socketIo };
+module.exports = {
+    GAME_TYPES,
+    CLIENT_ACTIONS,
+    EVENTS,
+    socketIo,
+    strummuluServerFactory,
+    gameRoomFactory,
+    GameLogicInterface
+};
