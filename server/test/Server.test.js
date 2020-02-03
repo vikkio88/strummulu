@@ -18,6 +18,10 @@ class MockRoom {
     leave() {
 
     }
+
+    playerAction() {
+
+    }
 }
 
 class MockClosedRoom {
@@ -26,6 +30,12 @@ class MockClosedRoom {
     }
 
     tryJoin() {
+        return false;
+    }
+}
+
+class NotInRoom extends MockRoom {
+    has() {
         return false;
     }
 }
@@ -126,6 +136,59 @@ describe('Server class tests', () => {
             expect(server.joinRoom(mockRoomInstance.id, joiner)).to.be.true;
 
             expect(server.leaveRoom(mockRoomInstance.id, joiner)).to.be.true;
+        });
+
+        it('should not let a client leave a room if the room does not exist', () => {
+            const server = factory();
+            const creator = { id: 'someClientId' };
+            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            server.createRoom(creator, {});
+            expect(server.rooms).to.include(mockRoomInstance);
+            expect(server.leaveRoom('someUnExistingRoomId', joiner)).to.be.false;
+        });
+
+        it('should not let a client leave a room if the client is not in it', () => {
+            const roomInstance = new NotInRoom();
+            const config = { roomFactory: () => roomInstance };
+            const server = factory(config);
+            const creator = { id: 'someClientId' };
+            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            server.createRoom(creator, {});
+            expect(server.rooms).to.include(roomInstance);
+            expect(server.leaveRoom(mockRoomInstance.id, joiner)).to.be.false;
+        });
+
+        it('should allow the user to perform an action if he is in the room', () => {
+            const creator = { id: 'someClientId' };
+            const joiner = { id: 'someJoinerId' };
+            const { id: roomId } = mockRoomInstance;
+            const server = factory();
+            server.createRoom(creator, {});
+            server.joinRoom(roomId, joiner);
+
+            expect(server.clientAction(joiner, 'someAction', mockRoomInstance.id, {}))
+                .to.be.true;
+        });
+
+        it('should not allow the user to perform an action if there is no room', () => {
+            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const server = factory();
+            server.createRoom(joiner, {});
+
+            expect(server.clientAction(joiner, 'someAction', 'anotherRoomId', {}))
+                .to.be.false;
+        });
+
+        it('should not allow the user to perform an action if he is not in the room', () => {
+            const roomInstance = new NotInRoom();
+            const config = { roomFactory: () => roomInstance };
+            const server = factory(config);
+            const creator = { id: 'someClientId' };
+            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            server.createRoom(creator, {});
+
+            expect(server.clientAction(joiner, 'someAction', roomInstance.id, {}))
+                .to.be.false;
         });
 
     });

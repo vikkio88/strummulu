@@ -84,16 +84,17 @@ class Server {
         if (!room) {
             client.emit(MESSAGES.ERROR, `Non existing room ${roomId}`);
             console.log(`[SERVER]: ${clientId} tried performing action ${type} in non existing room ${roomId}`);
-            return;
+            return false;
         }
 
         if (!room.has(client)) {
             client.emit(MESSAGES.ERROR, `Action not allowed in room ${roomId}`);
             console.log(`[SERVER]: ${clientId} tried performing action ${type} in room ${roomId}`);
-            return;
+            return false;
         }
 
         room.playerAction(client, type, payload);
+        return true;
     }
 
     roomCleanup(room) {
