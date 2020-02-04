@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
+    "sinon": "^8.1.1",
+    "sinon-chai": "^3.4.0",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
