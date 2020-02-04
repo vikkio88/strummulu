@@ -1,5 +1,12 @@
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const chai = require('chai');
 const { expect } = require('chai');
+
 const { Server } = require('../Server');
+const { MESSAGES } = require('../const')
+
+chai.use(sinonChai);
 
 class MockRoom {
     constructor() {
@@ -108,26 +115,28 @@ describe('Server class tests', () => {
         });
 
         it('should not let a client join a non existing room', () => {
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             const server = factory();
             const nonExistingRoomId = 'nonExistingRoomId';
             expect(server.rooms).to.be.a('Map').that.is.empty;
             expect(server.joinRoom(nonExistingRoomId, joiner)).to.be.false;
+            expect(joiner.emit).to.be.calledOnceWith(MESSAGES.ERROR, 'Room nonExistingRoomId does not exist');
         });
 
         it('should not let a client join a room if the check fails at room level', () => {
             const closedRoomInstance = new MockClosedRoom();
             const config = { roomFactory: () => closedRoomInstance, verbose: false };
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             const server = factory(config);
             const creator = { id: 'someClientId' };
             server.createRoom(creator, {});
             expect(server.rooms).to.include(closedRoomInstance);
             expect(server.joinRoom(closedRoomInstance.id, joiner)).to.be.false;
+            expect(joiner.emit).not.called;
         });
 
         it('should let a client leave a room if that room has the client in', () => {
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             const server = factory();
             const creator = { id: 'someClientId' };
             server.createRoom(creator, {});
@@ -136,6 +145,7 @@ describe('Server class tests', () => {
             expect(server.joinRoom(mockRoomInstance.id, joiner)).to.be.true;
 
             expect(server.leaveRoom(mockRoomInstance.id, joiner)).to.be.true;
+            expect(joiner.emit).not.called;
         });
 
         it('should not let a client leave a room if the room does not exist', () => {
