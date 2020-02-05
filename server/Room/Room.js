@@ -3,8 +3,9 @@ const generateId = () => Math.random().toString(36).substr(2, 5);
 
 class Room {
 
-    constructor(creator, gameLogic = null, { maxPlayers = 2, idGenerator = generateId }) {
+    constructor(creator, gameLogic = null, { maxPlayers = 2, idGenerator = generateId, verbose = true }) {
         this.id = idGenerator();
+        this.verbose = verbose;
 
         this.gameLogic = gameLogic;
         this.maxPlayers = maxPlayers;
@@ -52,7 +53,7 @@ class Room {
 
     leave(clientId) {
         this.players.delete(clientId);
-        console.log(`[room]: ${clientId} left room ${this.id}`);
+        this.log(`${clientId} left the room`);
         this.onLeave({ leaverId: clientId });
         this.broadcast({ type: MESSAGE_TYPES.LEFT_ROOM, leaverId: clientId });
     }
@@ -61,10 +62,10 @@ class Room {
         const joined = this.join(client);
         const roomId = this.id;
         const joinerId = client.id;
-        console.log(`[room]: ${joinerId} trying joining ${roomId}`);
+        this.log(`${joinerId} trying joining`);
 
         if (!joined) {
-            console.log(`[room]: ${joinerId} couldn't join room ${roomId}`)
+            this.log(`${joinerId} couldn't join room`)
             client.emit(MESSAGES.ERROR, `Cannot join room ${roomId}`);
             return false;
         }
@@ -87,6 +88,10 @@ class Room {
         this.broadcast(this.gameState, MESSAGES.STATE_UPDATE);
     }
 
+    log(message) {
+        if (!this.verbose) return;
+        console.log(`[room: ${this.id}]: ${message}`);
+    }
 }
 
 module.exports = Room;
