@@ -31,22 +31,6 @@ class MockRoom {
     }
 }
 
-class MockClosedRoom {
-    constructor() {
-        this.id = 'closedRoomId';
-    }
-
-    tryJoin() {
-        return false;
-    }
-}
-
-class NotInRoom extends MockRoom {
-    has() {
-        return false;
-    }
-}
-
 describe('Server class tests', () => {
     const mockRoomInstance = new MockRoom();
     const config = { roomFactory: () => mockRoomInstance, verbose: false };
@@ -124,7 +108,8 @@ describe('Server class tests', () => {
         });
 
         it('should not let a client join a room if the check fails at room level', () => {
-            const closedRoomInstance = new MockClosedRoom();
+            const closedRoomInstance = new MockRoom();
+            closedRoomInstance.tryJoin = sinon.fake.returns(false);
             const config = { roomFactory: () => closedRoomInstance, verbose: false };
             const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             const server = factory(config);
@@ -132,7 +117,8 @@ describe('Server class tests', () => {
             server.createRoom(creator, {});
             expect(server.rooms).to.include(closedRoomInstance);
             expect(server.joinRoom(closedRoomInstance.id, joiner)).to.be.false;
-            expect(joiner.emit).not.called;
+            expect(closedRoomInstance.tryJoin).to.be.calledOnceWith();
+            expect(joiner.emit).not.to.be.called;
         });
 
         it('should let a client leave a room if that room has the client in', () => {
@@ -158,14 +144,16 @@ describe('Server class tests', () => {
         });
 
         it('should not let a client leave a room if the client is not in it', () => {
-            const roomInstance = new NotInRoom();
+            const roomInstance = new MockRoom;
+            roomInstance.has = sinon.fake.returns(false);
             const config = { roomFactory: () => roomInstance, verbose: false };
             const server = factory(config);
             const creator = { id: 'someClientId' };
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(false) };
             server.createRoom(creator, {});
             expect(server.rooms).to.include(roomInstance);
             expect(server.leaveRoom(mockRoomInstance.id, joiner)).to.be.false;
+            expect(joiner.emit).to.be.calledOnceWith(MESSAGES.ERROR, 'Action not allowed in room fakeRoomId');
         });
 
         it('should allow the user to perform an action if he is in the room', () => {
@@ -181,24 +169,28 @@ describe('Server class tests', () => {
         });
 
         it('should not allow the user to perform an action if there is no room', () => {
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             const server = factory();
             server.createRoom(joiner, {});
 
             expect(server.clientAction(joiner, 'someAction', 'anotherRoomId', {}))
                 .to.be.false;
+            expect(joiner.emit).to.be.calledWith(MESSAGES.ERROR, 'Non existing room anotherRoomId');
         });
 
         it('should not allow the user to perform an action if he is not in the room', () => {
-            const roomInstance = new NotInRoom();
+            const roomInstance = new MockRoom;
+            roomInstance.has = sinon.fake.returns(false);
             const config = { roomFactory: () => roomInstance, verbose: false };
             const server = factory(config);
             const creator = { id: 'someClientId' };
-            const joiner = { id: 'someJoinerId', emit(type) { return type; } };
+            const joiner = { id: 'someJoinerId', emit: sinon.fake.returns(true) };
             server.createRoom(creator, {});
 
             expect(server.clientAction(joiner, 'someAction', roomInstance.id, {}))
                 .to.be.false;
+            expect(roomInstance.has).to.be.called;
+            expect(joiner.emit).to.be.calledWith(MESSAGES.ERROR, 'Action not allowed in room fakeRoomId');
         });
 
     });
