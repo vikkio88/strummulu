@@ -3,8 +3,8 @@ const generateId = () => Math.random().toString(36).substr(2, 5);
 
 class Room {
 
-    constructor(creator, gameLogic = null, { maxPlayers = 2 }) {
-        this.id = generateId();
+    constructor(creator, gameLogic = null, { maxPlayers = 2, idGenerator = generateId }) {
+        this.id = idGenerator();
 
         this.gameLogic = gameLogic;
         this.maxPlayers = maxPlayers;
