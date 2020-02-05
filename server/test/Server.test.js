@@ -37,7 +37,7 @@ describe('Server class tests', () => {
     const factory = (conf = config) => new Server(conf);
 
     describe('constructor', () => {
-        it('should create a correct instance', () => {
+        it('should create an instance correctly', () => {
             expect(factory).not.to.throw(Error);
             const server = factory();
             expect(server.rooms).to.be.a('Map').that.is.empty;
