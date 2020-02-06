@@ -21,11 +21,8 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('server/package-lock.json') }}
 
-      - name: Testing Server Lib
-        run: cd server
-
       - name: Install Dependencies
-        run: npm i
+        run: cd server && npm i
 
       - name: Run Tests
-        run: npm test
+        run: cd server && npm test
