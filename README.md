@@ -1,4 +1,7 @@
 # Strummulu
+
+[![Actions Status](https://github.com/vikkio88/strummulu/workflows/test/badge.svg)](https://github.com/vikkio88/strummulu/actions)
+
 a small fullstack library to serve web-browser games based on websockets communication
 ## Docs
 coming soon...
