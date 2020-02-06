@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('server/package-lock.json') }}
 
       - name: Testing Server Lib
         run: cd server
