@@ -2,7 +2,8 @@ name: Test
 on: [push]
 
 jobs:
-  run-tests:
+  server-tests:
+    working-directory: ./server
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,8 +22,8 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('server/package-lock.json') }}
 
-      - name: Install Dependencies
-        run: cd server && npm i
+      - name: Installing Dependencies
+        run: npm i
 
-      - name: Run Tests
-        run: cd server && npm test
+      - name: Running Tests
+        run: npm test
