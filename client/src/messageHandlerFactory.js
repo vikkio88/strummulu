@@ -37,9 +37,9 @@ const log = (type, message) => {
 }
 
 
-export default (types = MESSAGE_TYPES, messageHandlers = MESSAGE_HANDLERS, verbose = false) => {
+export default (types = MESSAGE_TYPES, messageHandlers = MESSAGE_HANDLERS) => {
     if (!types.default || !messageHandlers[types.default]) throw Error('No default set for message or handlers');
-    return (message, currentState = {}) => {
+    return (message, currentState = {}, verbose = false) => {
         let { type } = message;
         type = Object.values(types).indexOf(type) > -1 ? type : types.default;
         if (verbose) log(type, message);
