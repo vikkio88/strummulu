@@ -2,7 +2,7 @@ const { MESSAGES, MESSAGE_TYPES } = require('../const');
 const generateId = () => Math.random().toString(36).substr(2, 5);
 
 class Room {
-
+    /** Might be better to move  ↓ gameLogic to config      ↓  */
     constructor(creator, gameLogic = null, { maxPlayers = 2, idGenerator = generateId, verbose = true }) {
         this.id = idGenerator();
         this.verbose = verbose;

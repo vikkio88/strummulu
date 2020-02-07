@@ -1,9 +1,12 @@
+const Room = require('../Room/Room');
 const TwoPlayersTurnRoom = require('../Room/TwoPlayersTurnRoom');
 const GAME_TYPES = {
-    TWO_PLAYERS_TURN_BASED: 'twoPlayersTurnBased'
+    SIMPLE_ROOM: 'simpleRoom',
+    TWO_PLAYERS_TURN_BASED: 'twoPlayersTurnBased',
 };
 
 const GAME_TYPES_ROOMS = {
+    [GAME_TYPES.SIMPLE_ROOM]: Room,
     [GAME_TYPES.TWO_PLAYERS_TURN_BASED]: TwoPlayersTurnRoom
 };
 
