@@ -1,0 +1,25 @@
+{
+  "name": "example-chat",
+  "version": "1.0.0",
+  "description": "example chat using strummulu",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon server.js",
+    "postinstall": "cp ./node_modules/strummulu-client/dist/index.js public/client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "null"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "strummulu-client": "file:../../client",
+    "strummulu-server": "file:../../server"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

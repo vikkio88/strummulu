@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <script src="client.js"></script>
+</head>
+
+<body>
+    <h2>Example</h2>
+    <div id="main">
+        <button id="create" onclick="createRoom()">Create Room</button>
+        <button id="join" onclick="joinRoom()">Join Room</button>
+        <div id="state"></div>
+        <div id="gameState"></div>
+    </div>
+</body>
+<script>
+    const client = strummuluClient.default.clientFactory();
+    const messageHandler = strummuluClient.default.messageHandlerFactory();
+    let state = {};
+    let gameState = {};
+
+    function updateState(message) {
+        if (message) {
+            const newState = messageHandler(message, state, true);
+            state = newState;
+        }
+        document.getElementById('state').innerHTML = JSON.stringify(state);
+    }
+
+    function createRoom() {
+        document.getElementById('create').disabled = true;
+        document.getElementById('join').disabled = true;
+        client.createRoom();
+    }
+
+    function joinRoom() {
+        document.getElementById('create').disabled = true;
+        document.getElementById('join').disabled = true;
+        const roomId = prompt('Room id?');
+        client.joinRoom(roomId);
+    }
+
+    client.init({
+        [client.EVENTS.MESSAGE]: msg => updateState(msg),
+        [client.EVENTS.STATE_UPDATE]: console.log,
+    });
+    updateState();
+</script>
+
+</html>
