@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import './App.css';
 
 import { preloadAssets } from 'libs';
-import { strummulu, messageHandler } from 'strummulu-client';
+import strummulu from 'strummulu-client';
 //import { GameState } from 'components/game';
 import { Lobby, Game } from 'components/views';
 
+const { clientFactory, messageHandlerFactory } = strummulu;
+
 const { REACT_APP_GAME_BACKEND_URL } = process.env;
-const client = strummulu(REACT_APP_GAME_BACKEND_URL);
+const client = clientFactory(REACT_APP_GAME_BACKEND_URL);
+const messageHandler = messageHandlerFactory();
 
 
 class App extends Component {
