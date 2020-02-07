@@ -3,21 +3,18 @@
   "version": "0.0.1",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node index.js",
-    "dev": "nodemon ./index.js"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "sinon": "^8.1.1",
-    "sinon-chai": "^3.4.0",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.0.1",
-    "nodemon": "^2.0.2"
+    "sinon": "^8.1.1",
+    "sinon-chai": "^3.4.0"
   }
 }
