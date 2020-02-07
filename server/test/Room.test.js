@@ -4,7 +4,7 @@ const sinonChai = require('sinon-chai');
 const { expect } = require('chai');
 
 const Room = require('../Room/Room');
-const { MESSAGES } = require('../const');
+const { MESSAGES, MESSAGE_TYPES } = require('../const');
 
 chai.use(sinonChai);
 
@@ -29,12 +29,12 @@ describe('Room class tests', () => {
             expect(roomInstance.verbose).to.be.equal(conf.verbose);
             expect(creator.emit).to.have.been.calledTwice;
             expect(creator.emit.getCall(0).args).to.deep.equal([
-                MESSAGES.STATE_UPDATE,
-                {}
-            ]);
-            expect(creator.emit.getCall(1).args).to.deep.equal([
                 MESSAGES.MESSAGE,
                 { creatorId: "creatorId", roomId: "roomId", type: "createdRoom" }
+            ]);
+            expect(creator.emit.getCall(1).args).to.deep.equal([
+                MESSAGES.STATE_UPDATE,
+                {}
             ]);
         });
     });
@@ -73,5 +73,63 @@ describe('Room class tests', () => {
             expect(room.onJoin.getCall(0).args).to.deep.equal([{ joinerId: joiner1.id }]);
             expect(room.onJoin.getCall(1).args).to.deep.equal([{ joinerId: joiner2.id }]);
         });
-    })
+    });
+
+    describe('leaving actions', () => {
+        it('should let joined clients to leave', () => {
+            const creator = generateClient();
+            const joiner = generateClient({ id: 'joinerId' });
+
+            const room = factory({ creator });
+            room.onLeave = sinon.fake();
+            room.tryJoin(joiner);
+            expect(room.has(creator)).to.be.true;
+            expect(room.has(joiner)).to.be.true;
+
+            room.leave(joiner.id);
+            expect(room.has(joiner)).to.be.false;
+            expect(room.onLeave).to.have.been.calledWith({ leaverId: joiner.id });
+            expect(creator.emit).to.have.been.calledWith(
+                MESSAGES.MESSAGE,
+                { type: MESSAGE_TYPES.LEFT_ROOM, leaverId: joiner.id }
+            );
+        });
+    });
+
+    describe('playerAction actions', () => {
+        it('should proxy the action to the right method', () => {
+            const creator = generateClient();
+            const joiner = generateClient({ id: 'joinerId' });
+            const actionType = 'actionType';
+            const actionPayload = { some: 'stuff' };
+
+            const room = factory({ creator });
+            room.onAction = sinon.fake();
+            room.join(joiner);
+
+            room.playerAction(joiner, actionType, actionPayload);
+            expect(room.onAction).to.have.been.calledWith(
+                { client: joiner, type: actionType, payload: actionPayload }
+            );
+        });
+    });
+
+    describe('broadcasts', () => {
+        it('should broadcast to each player in room, on gameStateUpdate', () => {
+            const creator = generateClient();
+            const joiner = generateClient({ id: 'joinerId' });
+
+            const newGameState = { something: 'happened' };
+
+            const room = factory({ creator });
+            room.onAction = sinon.fake();
+            room.join(joiner);
+
+            room.gameState = newGameState;
+            room.broadcastStateUpdate();
+
+            expect(creator.emit).to.have.been.calledWith(MESSAGES.STATE_UPDATE, newGameState);
+            expect(joiner.emit).to.have.been.calledWith(MESSAGES.STATE_UPDATE, newGameState);
+        });
+    });
 });

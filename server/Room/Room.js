@@ -12,10 +12,8 @@ class Room {
         this.players = new Map();
         const { id: creatorId } = creator;
         this.players.set(creatorId, creator);
-
-        this.init({ creatorId });
-
         creator.emit(MESSAGES.MESSAGE, { type: MESSAGE_TYPES.CREATED_ROOM, roomId: this.id, creatorId: creatorId });
+        this.init({ creatorId });
     }
 
     init(params) {
