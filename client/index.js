@@ -1,2 +1,7 @@
-export { default as strummulu } from './strummulu';
-export { default as messageHandler } from './messageHandler';
+import clientFactory from './src/clientFactory';
+import messageHandlerFactory from './src/messageHandlerFactory';
+
+export default {
+    clientFactory,
+    messageHandlerFactory
+};

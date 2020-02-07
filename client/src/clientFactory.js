@@ -1,4 +1,4 @@
-import openSocket from 'socket.io-client';
+import socketIoClient from 'socket.io-client';
 
 const logger = msg => console.log(msg);
 const CLIENT_EVENTS = {
@@ -19,7 +19,7 @@ const defaultConfig = {
     [SERVER_EVENTS.ERROR]: logger,
 };
 
-const strummulu = serverUrl => {
+const strummulu = (serverUrl, openSocket = socketIoClient) => {
     return {
         EVENTS: SERVER_EVENTS,
 
