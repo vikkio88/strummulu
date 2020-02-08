@@ -9,11 +9,18 @@
     <div id="main">
         <button id="create" onclick="createRoom()">Create Room</button>
         <button id="join" onclick="joinRoom()">Join Room</button>
-        <div id="state"></div>
-        <div id="gameState"></div>
+        <button id="leave" onclick="leaveRoom()" disabled>Leave Room</button>
+        <h1 id="roomId"></h1>
+        <div id="chat"></div>
+        <div id="chatTools" style="display:none">
+        <input id="message" type="text" />
+        <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
 </body>
 <script>
+    let me = null;
+    let roomId = null;
     const client = strummuluClient.default.clientFactory();
     const messageHandler = strummuluClient.default.messageHandlerFactory();
     let state = {};
@@ -23,26 +30,55 @@
         if (message) {
             const newState = messageHandler(message, state, true);
             state = newState;
+
+            if(message.type === 'createdRoom' || message.type=== 'joinedRoom'){
+                me = message.me;
+                roomId = message.roomId;
+                document.getElementById('roomId').innerHTML = roomId;
+                document.getElementById('chatTools').style.display = 'block';
+            }
         }
-        document.getElementById('state').innerHTML = JSON.stringify(state);
     }
 
     function createRoom() {
         document.getElementById('create').disabled = true;
         document.getElementById('join').disabled = true;
+        document.getElementById('leave').disabled = false;
         client.createRoom();
     }
 
     function joinRoom() {
         document.getElementById('create').disabled = true;
         document.getElementById('join').disabled = true;
+        document.getElementById('leave').disabled = false;
         const roomId = prompt('Room id?');
         client.joinRoom(roomId);
     }
 
+    function leaveRoom(){
+        client.leaveRoom(roomId);
+        document.getElementById('create').disabled = false;
+        document.getElementById('join').disabled = false;
+        document.getElementById('leave').disabled = true;
+        document.getElementById('chatTools').style.display = 'none';
+        roomId = null;
+    }
+
+    function updateChat(message){
+        const {messages} = message;
+        document.getElementById('chat').innerHTML = '<ul>' + messages.map(m => {
+            return '<li>' + m + '</li>';
+        }).join('') + '</ul>';
+    }
+
+    function sendMessage(){
+        const message = document.getElementById('message').value;
+        client.sendAction('message', roomId, {message});
+    }
+
     client.init({
         [client.EVENTS.MESSAGE]: msg => updateState(msg),
-        [client.EVENTS.STATE_UPDATE]: console.log,
+        [client.EVENTS.STATE_UPDATE]: msg => updateChat(msg),
     });
     updateState();
 </script>
