@@ -1,14 +1,31 @@
 {
   "name": "strummulu-server",
+  "main": "index.js",
   "version": "0.0.1",
-  "main": "server.js",
+  "description": "websocket game library - server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikkio88/strummulu.git"
+  },
+  "keywords": [
+    "strummulu",
+    "websocket",
+    "multiplayer",
+    "game",
+    "socket.io",
+    "colyseus alternative"
+  ],
+  "author": "Vincenzo Ciaccio <vincenzo.ciaccio@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vikkio88/strummulu/issues"
+  },
+  "homepage": "https://github.com/vikkio88/strummulu",
   "scripts": {
     "test": "mocha",
     "test:coverage": "nyc --reporter=text mocha",
     "test:watch": "mocha --watch"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
     "socket.io": "^2.1.1"
