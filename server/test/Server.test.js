@@ -73,6 +73,26 @@ describe('Server class tests', () => {
             server.disconnected(clientId);
             expect(server.connections).not.to.include(connection);
         });
+
+        it('should drop client on disconnection, but also invoke room leave', () => {
+            const clientId = 'someClient';
+            const client = { id: clientId };
+            const connection = { some: 'stuff' };
+            const mockRoomInstance = new MockRoom;
+            mockRoomInstance.leave = sinon.fake();
+            const config = { roomFactory: () => mockRoomInstance, verbose: false };
+            const server = factory(config);
+            server.connected(clientId, connection);
+            expect(server.connections).to.include(connection);
+
+            server.createRoom(client);
+            expect(server.connectionRooms.get(clientId)).to.be.equal(mockRoomInstance.id);
+            expect(server.connectionRooms).to.include(mockRoomInstance.id);
+
+            server.disconnected(clientId);
+            expect(mockRoomInstance.leave).to.have.been.calledWith(clientId);
+            expect(server.connections).not.to.include(connection);
+        });
     });
 
     describe('client action events', () => {
@@ -194,4 +214,23 @@ describe('Server class tests', () => {
         });
 
     });
-})
+
+    describe('verbose console output', () => {
+        let stub = null;
+        beforeEach(function () {
+            stub = sinon.stub(console, "log");
+        });
+        afterEach(function () {
+            stub.restore();
+        });
+
+        it('should call console.log if verbose is set to true', () => {
+            const config = { roomFactory: () => roomInstance, verbose: true };
+            const server = factory(config);
+            const connection = { some: 'stuff' };
+            const clientId = 'someClientId';
+            server.connected(clientId, connection);
+            expect(stub).to.be.called;
+        });
+    });
+});

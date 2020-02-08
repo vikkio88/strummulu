@@ -19,7 +19,8 @@ describe('Room class tests', () => {
 
     const factory = ({ creator = generateClient(), gameLogic = getGameLogic(), config = conf }) => {
         return new Room(creator, gameLogic, config);
-    }
+    };
+
     describe('constructor', () => {
         it('should create an instance correctly', () => {
             const creator = generateClient();
@@ -130,6 +131,22 @@ describe('Room class tests', () => {
 
             expect(creator.emit).to.have.been.calledWith(MESSAGES.STATE_UPDATE, newGameState);
             expect(joiner.emit).to.have.been.calledWith(MESSAGES.STATE_UPDATE, newGameState);
+        });
+    });
+
+    describe('verbose console output', () => {
+        let stub = null;
+        beforeEach(function () {
+            stub = sinon.stub(console, "log");
+        });
+        afterEach(function () {
+            stub.restore();
+        });
+
+        it('should call console.log if verbose is set to true', () => {
+            const room = factory({ config: { verbose: true, maxPlayers: 1 } });
+            room.log('someStuff');
+            expect(stub).to.be.called;
         });
     });
 });

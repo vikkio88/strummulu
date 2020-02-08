@@ -4,6 +4,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
+    "test:coverage": "nyc --reporter=text mocha",
     "test:watch": "mocha --watch"
   },
   "author": "",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.0.1",
+    "nyc": "^15.0.0",
     "sinon": "^8.1.1",
     "sinon-chai": "^3.4.0"
   }
