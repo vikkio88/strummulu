@@ -2,4 +2,5 @@ test/
 .babelrc
 webpack.config.js
 src/
+.nyc_output/
 index.js
