@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 const { expect } = chai;
 
-import lib from '../index.js';
+import lib from '../dist';
 
 const { clientFactory } = lib;
 
