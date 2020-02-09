@@ -7,6 +7,7 @@ module.exports = {
         filename: 'index.js',
         library: 'strummuluClient',
         libraryTarget: 'umd',
+        libraryExport: 'default',
         umdNamedDefine: true
     },
     module: {
