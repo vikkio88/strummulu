@@ -17,7 +17,7 @@ class Game extends Component {
     render() {
         const { gameState = {}, roomId, playerId, onAction, onLeave } = this.props;
         const { waiting, finished, resolved, actions, history } = gameState;
-        const { loaded } = gameState.players[playerId];
+        const { loaded } = (gameState && gameState.players) ? gameState.players[playerId] : {};
         const finishedAndWinner = finished && gameState.players[playerId].winner;
         const restartRequested = finished && gameState.players[playerId].restartRequest;
 
