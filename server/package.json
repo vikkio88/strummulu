@@ -1,7 +1,7 @@
 {
   "name": "strummulu-server",
   "main": "index.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "websocket game library - server",
   "repository": {
     "type": "git",
