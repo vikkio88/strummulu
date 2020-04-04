@@ -1,6 +1,6 @@
 {
   "name": "strummulu-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "websocket game library - client",
   "main": "dist/index.js",
   "repository": {
