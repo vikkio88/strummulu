@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/vikkio88/strummulu",
   "dependencies": {
+    "npm": "^6.14.4",
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
